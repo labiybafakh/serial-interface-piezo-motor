@@ -13,12 +13,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y cmake g++ libstdc++-9-dev libc++-dev libc++abi-dev
-
+    - name: Install Clang
+      run: sudo apt-get update && sudo apt-get install -y clang libc++-dev libc++abi-dev
 
     - name: Configure CMake
-      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-stdlib=libc++"
+      run: mkdir build && cmake -S . -B build
 
     - name: Build
       run: cmake --build build --config Release
