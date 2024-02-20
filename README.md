@@ -6,7 +6,7 @@ The interface is based on [this technical manual](https://piezomotor.com/wp-cont
 
 ## Build
 ```bash
-mkdir build
+mkdir build && cd build
 cmake ..
 cmake --build .
 ```
