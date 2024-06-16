@@ -85,10 +85,8 @@ std::string PiezoMotor::read_position(){
 
     std::string response="";
 
-    std::cout << "1" << std::endl;
     const std::string command = "X1E\r";
     ssize_t bytes_written = write(fd_, command.c_str(), command.length());
-    std::cout << "2" << std::endl;
 
     if (bytes_written < 0) {
         std::cerr << "Error writing to serial port" << std::endl;
@@ -98,12 +96,20 @@ std::string PiezoMotor::read_position(){
     memset(buffer, '\0', sizeof(buffer));
 
     ssize_t num_bytes = read(fd_, buffer, sizeof(buffer));
+    response = buffer;
 
-    std::cout << "READING" << std::endl;
+    std::string substring = "X1E:";
 
-    for(const auto& data:buffer){
-        std::cout << buffer << std::endl;
+
+    size_t pos = response.find(substring);
+
+    // Check if the substring was found
+    if (pos != std::string::npos) {
+        // Erase the substring from the string
+        response.erase(pos, substring.length());
     }
+
+
     std::chrono::milliseconds(200);
 
     return response;
