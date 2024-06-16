@@ -1,41 +1,38 @@
 #include "piezeo_interface.hpp"
 
 
-int main() {
-    const char *portname = "/dev/ttyUSB0";
-    int fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC); //open the serial port
-    if (fd < 0) { 
-        std::cout << "Error opening " << portname << ": " << strerror(errno) << std::endl;
-        return -1;
-    }
+int main(int argc, const char * argv[]) {
 
-    struct termios tty;
-    memset(&tty, 0, sizeof tty);
-    if (tcgetattr(fd, &tty) != 0) {
-        std::cout << "Error from tcgetattr: " << strerror(errno) << std::endl;
-        return -1;
-    }
+    std::string portname = argv[1];
+    std::cout << "Serial port: " << portname << std::endl; 
 
-    // Set baud rate read and write
-    cfsetospeed(&tty, B115200); 
-    cfsetispeed(&tty, B115200);
+    PiezoMotor motor(portname);
+    sleep(5);
 
-    tty.c_cflag = (tty.c_cflag & ~CSIZE) | CS8;     // 8-bit chars
-    tty.c_cflag &= ~(PARENB | PARODD);              // No parity
-    tty.c_cflag &= ~CSTOPB;                         // 1 stop bit
-    tty.c_cflag &= ~CRTSCTS;                        // No hardware flow control
+    // std::string data = motor.read_position();
 
-    if (tcsetattr(fd, TCSANOW, &tty) != 0) {
-        std::cout << "Error from tcsetattr: " << strerror(errno) << std::endl;
-        return -1;
-    }
+    // std::cout << "Position:  "<< motor.read_position() << std::endl;
 
-    target_position(fd, 1000, 1000);
-    sleep(3); //sleep for 3 seconds
-    target_position(fd, -1000, 1000);
-    sleep(3);
-    stop(fd);
+    int run = 1000;
+    int run_b = -1000;
+    int step = 1000;
+    motor.set_position(0);
+    // sleep(3);
+    // motor.read_position();
+    // sleep(3);
+    // motor.move_step(run, step);
+    // motor.read_position();
+    // sleep(3);
+    // motor.move_step(run_b, step);
+    // motor.read_position();
+    // sleep(3);
 
-    close(fd);
+    // sleep(3); //sleep for 3 seconds
+    // std::cout << "Position:  "<< motor.read_position() << std::endl;
+    // motor.target_position(run_b, step);
+    // sleep(3);
+    // motor.stop();
+    // std::cout << "Position:  "<< motor.read_position() << std::endl;
+
     return 0;
 }
